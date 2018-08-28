@@ -6,7 +6,7 @@ import "../global.css";
 import aliceUrl from "../alice.jpg";
 import minnieUrl from "../minnie-cute2.png";
 import { StyledPresentItem } from "../components/Present";
-import { app, auth } from "../services/firebase";
+import { db, auth } from "../services/firebase";
 
 const S = ({ className, children }) => (
 	<div className={className}>
@@ -68,26 +68,32 @@ const DarkSection = Section.extend`
 export default class extends React.Component {
 	constructor(props) {
 		super(props);
-		this.onPresentSelected = this.onPresentSelected.bind(this);
 	}
 
 	state = {
 		presents: []
 	};
 
-	onPresentSelected(id) {
+	onPresentSelected(present) {
 		return () => {
-			let present = this.state.presents.find(p => p.id === id);
-			present.selected = auth.currentUser.uid;
-			this.setState({
-				justSelected: true
-			});
+			let data = present.data();
 
-			animateScroll.scrollToBottom({ smooth: true, duration: 1000 });
+			if (!!data.selected && data.selected !== auth.currentUser.uid) return;
 
-			app.firestore()
-				.collection("presents")
-				.add(present);
+			if (data.selected === auth.currentUser.uid) {
+				db.collection("presents")
+					.doc(present.id)
+					.update({ selected: null });
+			} else {
+				db.collection("presents")
+					.doc(present.id)
+					.update({ selected: auth.currentUser.uid });
+				this.setState({
+					justSelected: true
+				});
+
+				animateScroll.scrollToBottom({ smooth: true, duration: 1000 });
+			}
 		};
 	}
 
@@ -108,14 +114,11 @@ export default class extends React.Component {
 			currentUserId: auth.currentUser.uid
 		});
 
-		app.firestore()
-			.collection("presents")
-			.get()
-			.then(response => {
-				this.setState({
-					presents: response.docs.map(d => d.data())
-				});
+		db.collection("presents").onSnapshot(snapshot => {
+			this.setState({
+				presents: snapshot.docs
 			});
+		});
 	}
 
 	render() {
@@ -160,7 +163,7 @@ export default class extends React.Component {
 				</Section>
 				{this.state.presents.map((p, index) => (
 					<Section key={p.id} color={index % 2 == 0 ? "#fcced2" : ""}>
-						<StyledPresentItem present={p} onSelected={this.onPresentSelected(p.id)} currentUserId={this.state.currentUserId} />
+						<StyledPresentItem present={p.data()} onSelected={this.onPresentSelected(p)} currentUserId={this.state.currentUserId} />
 					</Section>
 				))}
 				{this.state.justSelected && (

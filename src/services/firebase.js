@@ -11,13 +11,13 @@ const config = {
 	storageBucket: "presents-3b848.appspot.com",
 	messagingSenderId: "998254999056"
 };
-export const app = firebase.initializeApp(config);
+const app = firebase.initializeApp(config);
 export const facebook = new firebase.auth.FacebookAuthProvider();
 export const google = new firebase.auth.GoogleAuthProvider();
 
-const firestore = app.firestore();
+export const db = app.firestore();
 const settings = { /* your settings... */ timestampsInSnapshots: true };
-firestore.settings(settings);
+db.settings(settings);
 
 export const auth = app.auth();
 auth.onAuthStateChanged(user => {

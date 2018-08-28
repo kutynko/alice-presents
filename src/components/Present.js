@@ -4,12 +4,15 @@ import { lighten, darken } from "polished";
 
 const getButtonText = (selected, currentUserId) => {
 	if (!!selected) {
-		if (selected === currentUserId) return "Передумал";
+		if (isMyPresent(selected, currentUserId)) return "Передумал";
 		else return "Меня уже подарят";
 	}
 
 	return "Собираюсь подарить";
 };
+
+const isMyPresent = (selected, currentUserId) => selected === currentUserId;
+const notChosen = selected => !selected;
 
 const PresentItem = ({ className, present, onSelected, currentUserId }) => (
 	<div className={className}>
@@ -17,7 +20,7 @@ const PresentItem = ({ className, present, onSelected, currentUserId }) => (
 		<div>
 			<Title href={present.link}>{present.name}</Title>
 			<Description>{present.description}</Description>
-			<Button color="#F20B1F" onClick={onSelected}>
+			<Button type={isMyPresent(present.selected, currentUserId) || notChosen(present.selected) ? "active" : "disabled"} onClick={onSelected}>
 				{getButtonText(present.selected, currentUserId)}
 			</Button>
 		</div>
@@ -40,17 +43,33 @@ const Description = styled.p`
 	color: #9a9a9a;
 `;
 
+const buttonStyles = {
+	active: {
+		color: "#F20B1F"
+	},
+	disabled: {
+		color: "lightgray"
+	}
+};
+
 const Button = styled.button`
 	font-size: 24px;
-	background: linear-gradient(to bottom right, ${props => props.color} 1%, ${props => lighten(0.1, props.color)} 75%);
-	border: 1px solid ${props => darken(0.5, props.color)};
+	background: linear-gradient(
+		to bottom right,
+		${props => buttonStyles[props.type].color} 1%,
+		${props => lighten(0.1, buttonStyles[props.type].color)} 75%
+	);
+	border: 1px solid ${props => darken(0.5, buttonStyles[props.type].color)};
 	padding: 1em 2em;
 	border-radius: 0.5em;
 	color: #fff;
-	text-shadow: 1px 1px 3px ${props => darken(0.5, props.color)};
-	&:hover {
-		background: ${props => darken(0.5, props.color)};
-	}
+	text-shadow: 1px 1px 3px ${props => darken(0.5, buttonStyles[props.type].color)};
+	${props =>
+		props.type === "active"
+			? `&:hover {
+		background: ${props => darken(0.5, buttonStyles[props.type].color)};
+	}`
+			: ""};
 `;
 
 export const StyledPresentItem = styled(PresentItem)`
