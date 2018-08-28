@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { push } from "gatsby-link";
 
-import { auth, facebook, google } from "../services/firebase";
+import { auth, facebook, google, initVk } from "../services/firebase";
 
 const MainContent = styled.div`
 	width: 100%;
@@ -89,7 +89,7 @@ const VkButton = styled(Button)`
 	}
 	&:hover,
 	&:focus {
-		background: #e74b37;
+		background: #3d6898;
 	}
 `;
 
@@ -102,7 +102,10 @@ const AnonymousLink = styled.a`
 
 export default class extends React.Component {
 	loginVk() {
-		push("/");
+		VK.Auth.login(response => {
+			
+			auth.updateCurrentUser(response.session.user)
+		});
 	}
 
 	loginFacebook() {
