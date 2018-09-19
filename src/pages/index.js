@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { push } from "gatsby-link";
 import styled, { keyframes } from "styled-components";
 import { animateScroll } from "react-scroll";
@@ -6,7 +7,6 @@ import "../global.css";
 import aliceUrl from "../alice.jpg";
 import minnieUrl from "../minnie-cute2.png";
 import { StyledPresentItem } from "../components/Present";
-import { db, auth } from "../services/firebase";
 
 const S = ({ className, children }) => (
 	<div className={className}>
@@ -69,7 +69,9 @@ export default class extends React.Component {
 	constructor(props) {
 		super(props);
 	}
-
+	static contextTypes = {
+		firebase: PropTypes.object
+	};
 	state = {
 		presents: []
 	};
@@ -78,16 +80,18 @@ export default class extends React.Component {
 		return () => {
 			let data = present.data();
 
-			if (!!data.selected && data.selected !== auth.currentUser.uid) return;
+			if (!!data.selected && data.selected !== this.context.firebase.auth.currentUser.uid) return;
 
-			if (data.selected === auth.currentUser.uid) {
-				db.collection("presents")
+			if (data.selected === this.context.firebase.auth.currentUser.uid) {
+				this.context.firebase.db
+					.collection("presents")
 					.doc(present.id)
 					.update({ selected: null });
 			} else {
-				db.collection("presents")
+				this.context.firebase.db
+					.collection("presents")
 					.doc(present.id)
-					.update({ selected: auth.currentUser.uid });
+					.update({ selected: this.context.firebase.auth.currentUser.uid });
 				this.setState({
 					justSelected: true
 				});
@@ -98,23 +102,23 @@ export default class extends React.Component {
 	}
 
 	logout() {
-		auth.signOut().then(() => {
+		this.context.firebase.auth.signOut().then(() => {
 			push("/login");
 		});
 	}
 
 	componentDidMount() {
-		console.log(auth);
-		if (!auth.currentUser) {
+		if (!this.context.firebase) return;
+		if (!this.context.firebase.auth.currentUser) {
 			push("/login");
 			return;
 		}
 
 		this.setState({
-			currentUserId: auth.currentUser.uid
+			currentUserId: this.context.firebase.auth.currentUser.uid
 		});
 
-		db.collection("presents").onSnapshot(snapshot => {
+		this.context.firebase.db.collection("presents").onSnapshot(snapshot => {
 			this.setState({
 				presents: snapshot.docs
 			});
@@ -122,16 +126,24 @@ export default class extends React.Component {
 	}
 
 	render() {
-		if (!auth.currentUser) return <div />;
+		if (!this.context.firebase) return <div />;
+		if (!this.context.firebase.auth.currentUser) return <div />;
 
-		let name = auth.currentUser.isAnonymous ? "Таинственный незнакомец" : auth.currentUser.displayName;
+		let name = this.context.firebase.auth.currentUser.isAnonymous
+			? "Таинственный незнакомец"
+			: this.context.firebase.auth.currentUser.displayName;
 		return (
 			<div>
 				<Section>
 					<h1>Нашей Алисе скоро будет целый годик!</h1>
 					<Minnie src={minnieUrl} />
 					{name}
-					<button onClick={this.logout}>Выйти</button>
+					<button
+						onClick={() => {
+							this.logout();
+						}}>
+						Выйти
+					</button>
 				</Section>
 				<DarkSection>
 					<h2>Приглашаем Вас вместе с нами отпраздновать это событие</h2>

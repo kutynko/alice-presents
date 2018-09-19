@@ -1,8 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import { push } from "gatsby-link";
-
-import { auth, facebook, google, initVk } from "../services/firebase";
+// import { Helmet } from "react-helmet";
+import PropTypes from "prop-types";
 
 const MainContent = styled.div`
 	width: 100%;
@@ -101,28 +100,48 @@ const AnonymousLink = styled.a`
 `;
 
 export default class extends React.Component {
+	static contextTypes = {
+		firebase: PropTypes.object
+	};
+
 	loginVk() {
-		VK.Auth.login(response => {
-			
-			auth.updateCurrentUser(response.session.user)
-		});
+		// if (typeof window !== `undefined`) {
+		// 	VK.Auth.login(response => {
+		// 		auth.updateCurrentUser(response.session.user);
+		// 	});
+		// }
 	}
 
 	loginFacebook() {
-		auth.signInWithPopup(facebook);
+		this.context.firebase.auth.signInWithPopup(this.context.firebase.facebook);
 	}
 
 	loginGoogle() {
-		auth.signInWithPopup(google);
+		this.context.firebase.auth.signInWithPopup(this.context.firebase.google);
 	}
 
 	loginAnonymous() {
-		auth.signInAnonymously();
+		this.context.firebase.auth.signInAnonymously();
 	}
 
 	render() {
 		return (
 			<MainContent>
+				{/* {typeof window !== "undefined" && (
+					<Helmet>
+						<script src="https://vk.com/js/api/openapi.js?159" type="text/javascript" />
+						<script
+							dangerouslySetInnerHTML={{
+								__html: `
+							VK.init({
+								apiId: 6674908
+							  });
+        `
+							}}
+						/>
+					</Helmet>
+				)} */}
+
 				<LoginPanel>
 					<Text>Здравствуйте!</Text>
 					<Text>Представьтесь, пожалуйста</Text>
