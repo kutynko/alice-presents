@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import { push } from "gatsby-link";
+import { Helmet } from "react-helmet";
 import styled, { keyframes, css } from "styled-components";
 import { animateScroll } from "react-scroll";
 import "../global.css";
@@ -170,6 +171,9 @@ export default class extends React.Component {
       : this.context.firebase.auth.currentUser.displayName;
     return (
       <ParallaxContainer>
+        <Helmet>
+          <link rel="icon" href="favicon.ico" />
+        </Helmet>
         <Minnie src={minnieUrl} />
         <ContentContainer id="presentsId">
           <Section>
@@ -186,9 +190,10 @@ export default class extends React.Component {
           <DarkSection>
             Мы рады, что Вы приняли приглашение на первый День рождение Алисы!
             <br />
-            Празднование состоится 3 ноября в 17:00 в игровом центре «Журавлик»
-            по адресу: ул. Лазаренко 73б (ТЦ Армада 2й этаж).
-            <a href="https://yandex.by/maps/-/CBqTYMEapC">Это примерно тут</a>
+            Празднование состоится 3 ноября в 17:00
+            <br /> в игровом центре «Журавлик» по адресу: ул. Лазаренко 73б (ТЦ
+            Армада 2й этаж). <br />
+            <a target="_blank" href="https://yandex.by/maps/-/CBqTYMEapC">Это примерно тут</a>
           </DarkSection>
           <Section>
             Тема праздника – <u>Вечеринка у Мини Маус</u>. Сочетания цветов
@@ -201,7 +206,10 @@ export default class extends React.Component {
             списке, это лишь полезные идеи для подарков.{" "}
           </Section>
           {this.state.presents.map((p, index) => (
-            <Section key={p.id} color={index % 2 == 0 ? "#fcced2" : ""}>
+            <Section
+              key={p.id}
+              color={index % 2 == 0 ? "rgb(252, 206, 210, 0.95)" : ""}
+            >
               <StyledPresentItem
                 present={p.data()}
                 onSelected={this.onPresentSelected(p)}
