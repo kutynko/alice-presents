@@ -60,7 +60,7 @@ const backdrop = css`
 const Minnie = styled.img`
   ${backdrop} transform: translateZ(-1px) scale(2);
 
-  @media (max-width: 700px) {
+  @media (max-width: 1000px) {
     display: none;
   }
 `;
@@ -74,14 +74,27 @@ const ParallaxContainer = styled.div`
 `;
 
 const ContentContainer = styled.div`
-  ${backdrop};
+  height: 100vh;
+  position: relative;
+  overflow-y: auto;
 `;
 
 const DarkSection = Section.extend`
-background: rgb(242,11,31, 0.85);
-background: linear-gradient(90deg, rgba(242,11,31,0.85) 1%, rgba(249,73,86,0.85) 75%, rgba(242,11,31,0.85) 100%);
+  background: rgb(242, 11, 31, 0.85);
+  background: linear-gradient(
+    90deg,
+    rgba(242, 11, 31, 0.85) 1%,
+    rgba(249, 73, 86, 0.85) 75%,
+    rgba(242, 11, 31, 0.85) 100%
+  );
   color: #fff;
   text-shadow: 1px 1px 1px black;
+`;
+
+const LogoutButton = styled.button`
+  padding: 0.5em 2em;
+  margin: auto 1em;
+  border-radius: 0.5em;
 `;
 
 export default class extends React.Component {
@@ -119,7 +132,7 @@ export default class extends React.Component {
           justSelected: true
         });
 
-        animateScroll.scrollToBottom({ smooth: true, duration: 1000 });
+        animateScroll.scrollToBottom({ containerId: "presentsId" });
       }
     };
   }
@@ -158,53 +171,34 @@ export default class extends React.Component {
     return (
       <ParallaxContainer>
         <Minnie src={minnieUrl} />
-        <ContentContainer>
+        <ContentContainer id="presentsId">
           <Section>
             <h1>Нашей Алисе скоро будет целый годик!</h1>
             {name}
-            <button
+            <LogoutButton
               onClick={() => {
                 this.logout();
               }}
             >
               Выйти
-            </button>
+            </LogoutButton>
           </Section>
           <DarkSection>
-            <h2>Приглашаем Вас вместе с нами отпраздновать это событие</h2>
-            Мероприятие состоится 31.10.2018
+            Мы рады, что Вы приняли приглашение на первый День рождение Алисы!
             <br />
-            <a href="https://yandex.by/maps/-/CBqTYMEapC">
-              г. Могилев, ул. Лазаренко, 73Б, (ТЦ «Армада», 2 этаж)
-            </a>
+            Празднование состоится 3 ноября в 17:00 в игровом центре «Журавлик»
+            по адресу: ул. Лазаренко 73б (ТЦ Армада 2й этаж).
+            <a href="https://yandex.by/maps/-/CBqTYMEapC">Это примерно тут</a>
           </DarkSection>
           <Section>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            ultricies semper hendrerit. Vivamus ut fringilla lacus. Morbi
-            tristique mi eros, sed placerat lectus laoreet a. Phasellus quis
-            tempus dui. Class aptent taciti sociosqu ad litora torquent per
-            conubia nostra, per inceptos himenaeos. Vivamus volutpat ornare
-            turpis, eget interdum nisi. Maecenas ut lectus condimentum,
-            tristique ipsum ac, aliquet dolor. Quisque sodales et odio quis
-            consectetur. Sed lacinia nisl vel rhoncus cursus. Phasellus in
-            condimentum dolor. Cras vel porttitor turpis. Suspendisse dapibus
-            tempor quam quis feugiat. Donec convallis lobortis nunc, eget
-            bibendum lorem vulputate in. Nullam imperdiet arcu commodo, mattis
-            dolor vel, finibus ex. Duis vitae erat non massa feugiat auctor.
-            Quisque sit amet facilisis nulla. Etiam at fringilla orci.
-            Vestibulum hendrerit est sit amet libero sollicitudin, in egestas
-            nibh sagittis. Vestibulum ante ipsum primis in faucibus orci luctus
-            et ultrices posuere cubilia Curae; Etiam id aliquet orci, vel
-            posuere velit. Ut non placerat purus, in malesuada odio. Nulla sit
-            amet diam sodales, dictum nunc in, vehicula dolor. Duis pellentesque
-            mollis rhoncus. Quisque commodo mollis maximus. Aenean vel elit
-            lacus. Mauris commodo quam id libero ultricies porta. feugiat.
-            Suspendisse consequat odio mauris, vitae congue nisl faucibus vitae.
-            Orci varius natoque penatibus et magnis dis parturient montes,
-            nascetur ridiculus mus. Quisque congue suscipit lorem, ullamcorper
-            finibus lectus. Nam finibus ante a massa congue, vel scelerisque
-            elit posuere. Morbi vel nisi tristique, tristique augue vel,
-            volutpat ipsum. Quisque vulputate ipsum ac lacinia tempor.
+            Тема праздника – <u>Вечеринка у Мини Маус</u>. Сочетания цветов
+            черный+ розовый или черный+ красный в одежде приветствуются. Для
+            того, чтобы облегчить Вам задачу с выбором подарка мы составили
+            список актуальных идей. Мы старались подбирать идеи из разных
+            ценовых категорий и разных магазинов. Выбранный Вами подарок может
+            не быть один в один как на картинке и куплен именно в этом магазине,
+            на который указывает ссылка, его вообще может не быть в предложенном
+            списке, это лишь полезные идеи для подарков.{" "}
           </Section>
           {this.state.presents.map((p, index) => (
             <Section key={p.id} color={index % 2 == 0 ? "#fcced2" : ""}>
