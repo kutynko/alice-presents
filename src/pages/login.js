@@ -132,7 +132,7 @@ export default class extends React.Component {
       <MainContent>
         {typeof window !== "undefined" && (
           <Helmet>
-            <link rel="icon" href="favicon.ico" />
+            <link rel="icon" href="/favicon.ico" />
 
             {/*					<script src="https://vk.com/js/api/openapi.js?159" type="text/javascript" />
 						<script

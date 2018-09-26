@@ -50,34 +50,10 @@ const Section = styled(S)`
   }
 `;
 
-const backdrop = css`
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-`;
-
 const Minnie = styled.img`
-  ${backdrop} transform: translateZ(-1px) scale(2);
-
   @media (max-width: 1000px) {
     display: none;
   }
-`;
-
-const ParallaxContainer = styled.div`
-  perspective: 1px;
-  perspective-origin: left;
-  height: 100vh;
-  overflow-x: hidden;
-  overflow-y: auto;
-`;
-
-const ContentContainer = styled.div`
-  height: 100vh;
-  position: relative;
-  overflow-y: auto;
 `;
 
 const DarkSection = Section.extend`
@@ -133,7 +109,7 @@ export default class extends React.Component {
           justSelected: true
         });
 
-        animateScroll.scrollToBottom({ containerId: "presentsId" });
+        animateScroll.scrollToBottom({});
       }
     };
   }
@@ -170,80 +146,84 @@ export default class extends React.Component {
       ? "Таинственный незнакомец"
       : this.context.firebase.auth.currentUser.displayName;
     return (
-      <ParallaxContainer>
+      <div>
         <Helmet>
-          <link rel="icon" href="favicon.ico" />
+          <link rel="icon" href="/favicon.ico" />
         </Helmet>
-        <Minnie src={minnieUrl} />
-        <ContentContainer id="presentsId">
-          <Section>
-            <h1>Нашей Алисе скоро будет целый годик!</h1>
-            {name}
-            <LogoutButton
-              onClick={() => {
-                this.logout();
-              }}
-            >
-              Выйти
-            </LogoutButton>
-          </Section>
-          <DarkSection>
-            Мы рады, что Вы приняли приглашение на первый День рождение Алисы!
-            <br />
-            Празднование состоится 3 ноября в 17:00
-            <br /> в игровом центре «Журавлик» по адресу: ул. Лазаренко 73б (ТЦ
-            Армада 2й этаж). <br />
-            <a target="_blank" href="https://yandex.by/maps/-/CBqTYMEapC">Это примерно тут</a>
-          </DarkSection>
-          <Section>
-            Тема праздника – <u>Вечеринка у Мини Маус</u>. Сочетания цветов
-            черный+ розовый или черный+ красный в одежде приветствуются. Для
-            того, чтобы облегчить Вам задачу с выбором подарка мы составили
-            список актуальных идей. Мы старались подбирать идеи из разных
-            ценовых категорий и разных магазинов. Выбранный Вами подарок может
-            не быть один в один как на картинке и куплен именно в этом магазине,
-            на который указывает ссылка, его вообще может не быть в предложенном
-            списке, это лишь полезные идеи для подарков.{" "}
-          </Section>
-          {this.state.presents.map((p, index) => (
-            <Section
-              key={p.id}
-              color={index % 2 == 0 ? "rgb(252, 206, 210, 0.95)" : ""}
-            >
-              <StyledPresentItem
-                present={p.data()}
-                onSelected={this.onPresentSelected(p)}
-                currentUserId={this.state.currentUserId}
-              />
-            </Section>
-          ))}
-          {this.state.justSelected && (
-            <DarkSection>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center"
+        <Section>
+          <div style={{ display: "flex", alignContent: "center" }}>
+            <Minnie src={minnieUrl} />
+            <div>
+              <h1>Нашей Алисе скоро будет целый годик!</h1>
+              {name}
+              <LogoutButton
+                onClick={() => {
+                  this.logout();
                 }}
               >
-                <img
-                  src={aliceUrl}
-                  alt="Алисочка"
-                  style={{
-                    float: "left",
-                    height: 150,
-                    clipPath: "circle(65px at center)"
-                  }}
-                />
-                <div>
-                  <div>СПАСИБО!</div>
-                  <div>Будем очень рады видеть Вас на нашем празднике :)</div>
-                </div>
+                Выйти
+              </LogoutButton>
+            </div>
+          </div>
+        </Section>
+        <DarkSection>
+          Мы рады, что Вы приняли приглашение на первый День рождение Алисы!
+          <br />
+          Празднование состоится 3 ноября в 17:00
+          <br /> в игровом центре «Журавлик» по адресу: ул. Лазаренко 73б (ТЦ
+          Армада 2й этаж). <br />
+          <a target="_blank" href="https://yandex.by/maps/-/CBqTYMEapC">
+            Это примерно тут
+          </a>
+        </DarkSection>
+        <Section>
+          Тема праздника – <u>Вечеринка у Мини Маус</u>. Сочетания цветов
+          черный+ розовый или черный+ красный в одежде приветствуются. Для того,
+          чтобы облегчить Вам задачу с выбором подарка мы составили список
+          актуальных идей. Мы старались подбирать идеи из разных ценовых
+          категорий и разных магазинов. Выбранный Вами подарок может не быть
+          один в один как на картинке и куплен именно в этом магазине, на
+          который указывает ссылка, его вообще может не быть в предложенном
+          списке, это лишь полезные идеи для подарков.{" "}
+        </Section>
+        {this.state.presents.map((p, index) => (
+          <Section
+            key={p.id}
+            color={index % 2 == 0 ? "rgb(252, 206, 210, 0.95)" : ""}
+          >
+            <StyledPresentItem
+              present={p.data()}
+              onSelected={this.onPresentSelected(p)}
+              currentUserId={this.state.currentUserId}
+            />
+          </Section>
+        ))}
+        {this.state.justSelected && (
+          <DarkSection>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center"
+              }}
+            >
+              <img
+                src={aliceUrl}
+                alt="Алисочка"
+                style={{
+                  float: "left",
+                  height: 150,
+                  clipPath: "circle(65px at center)"
+                }}
+              />
+              <div>
+                <div>СПАСИБО!</div>
+                <div>Будем очень рады видеть Вас на нашем празднике :)</div>
               </div>
-            </DarkSection>
-          )}
-        </ContentContainer>
-      </ParallaxContainer>
+            </div>
+          </DarkSection>
+        )}
+      </div>
     );
   }
 }
