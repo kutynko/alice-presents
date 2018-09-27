@@ -17,7 +17,7 @@ const notChosen = selected => !selected;
 const PresentItem = ({ className, present, onSelected, currentUserId }) => (
 	<div className={className}>
 		<Icon alt={present.description} src={present.imageUrl} />
-		<div>
+		<div style={{flex: '1'}}>
 			<Title href={present.link}>{present.name}</Title>
 			<Description>{present.description}</Description>
 			<Button type={isMyPresent(present.selected, currentUserId) || notChosen(present.selected) ? "active" : "disabled"} onClick={onSelected}>
@@ -36,6 +36,7 @@ const Title = styled.a`
 
 const Icon = styled.img`
 	max-width: 400px;
+	min-height: 200px;
 	object-fit: contain;
 `;
 

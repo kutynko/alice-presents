@@ -51,6 +51,10 @@ const Section = styled(S)`
 `;
 
 const Minnie = styled.img`
+  height: 200px;
+  position: absolute;
+  left: -100px;
+  top: -40px;
   @media (max-width: 1000px) {
     display: none;
   }
@@ -151,9 +155,9 @@ export default class extends React.Component {
           <link rel="icon" href="/favicon.ico" />
         </Helmet>
         <Section>
-          <div style={{ display: "flex", alignContent: "center" }}>
-            <Minnie src={minnieUrl} />
-            <div>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            <div style={{ position: "relative" }}>
+              <Minnie src={minnieUrl} />
               <h1>Нашей Алисе скоро будет целый годик!</h1>
               {name}
               <LogoutButton
