@@ -22,5 +22,5 @@ db.settings(settings);
 export const auth = app.auth();
 auth.onAuthStateChanged(user => {
 	if (user) push("/");
-	else push("login");
+	else push("/login");
 });
